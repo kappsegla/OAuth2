@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace AuthorizationServer
+namespace WebAPI
 {
     public class Startup
     {
@@ -22,8 +22,19 @@ namespace AuthorizationServer
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddMvc();
+        { 
+            services.AddMvcCore()   //https://offering.solutions/blog/articles/2017/02/07/difference-between-addmvc-addmvcore/
+           .AddAuthorization()
+           .AddJsonFormatters();     
+
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "http://localhost:5000";
+                    options.RequireHttpsMetadata = false;
+                    options.ApiName = "api1";
+                });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,6 +44,7 @@ namespace AuthorizationServer
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseAuthentication();
 
             app.UseMvc();
         }
