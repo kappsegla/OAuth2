@@ -1,4 +1,5 @@
 ﻿using IdentityModel.Client;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
@@ -46,16 +47,17 @@ namespace Client
             // call api
             var client = new HttpClient();
             client.SetBearerToken(tokenResponse.AccessToken);
-            
-            var response = await client.GetAsync("http://localhost:5001/api/Identity");
+
+            //var response = await client.GetAsync("http://localhost:5001/api/Identity");
+            var response = await client.GetAsync("http://localhost:5000/api/Identity");
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine(response.StatusCode);
             }
             else
             {
-                var content = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(JArray.Parse(content));
+                var jasoncontent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(JArray.Parse(jasoncontent));
             }
         }
         
